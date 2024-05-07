@@ -10,7 +10,6 @@ struct Msg {
 
 fn main() -> anyhow::Result<()> {
     let (tx, rx) = std::sync::mpsc::channel();
-    println!("hello, world!");
 
     // create producer thread
     for i in 0..10 {
@@ -30,7 +29,7 @@ fn main() -> anyhow::Result<()> {
 
     let result = consumer
         .join()
-        .map_err(|e| anyhow::anyhow!("thread error: {:?}", e))?;
+        .map_err(|e| anyhow::anyhow!("thread join error: {:?}", e))?;
     println!("sercet result: {:?}", result);
     println!("waiting for consumer to finish");
     Ok(())
@@ -41,7 +40,8 @@ fn produce(id: usize, tx: std::sync::mpsc::Sender<Msg>) -> anyhow::Result<()> {
         let rand = rand::random::<usize>() % 1000;
         let msg = Msg { id, value: rand };
         tx.send(msg).unwrap();
-        thread::sleep(Duration::from_millis(100));
+        let sleep_time = rand::random::<u8>() as u64 * 10;
+        thread::sleep(Duration::from_millis(sleep_time));
         if rand % 5 == 0 {
             println!("producer {} exit", id);
             break;
