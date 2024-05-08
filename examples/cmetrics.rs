@@ -1,4 +1,4 @@
-use concurrency::metrics::Metrics;
+use concurrency::metrics::DashMapMetrics;
 use rand::Rng;
 use std::thread;
 
@@ -6,7 +6,7 @@ const N: usize = 10;
 const M: usize = 5;
 
 fn main() -> anyhow::Result<()> {
-    let metrics = Metrics::default();
+    let metrics = DashMapMetrics::default();
 
     println!("{}", metrics);
 
@@ -24,7 +24,7 @@ fn main() -> anyhow::Result<()> {
     }
 }
 
-fn task_worker(id: usize, metrics: Metrics) -> anyhow::Result<()> {
+fn task_worker(id: usize, metrics: DashMapMetrics) -> anyhow::Result<()> {
     thread::spawn(move || {
         loop {
             // do long term stuff
@@ -39,7 +39,7 @@ fn task_worker(id: usize, metrics: Metrics) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn request_worker(metrics: Metrics) {
+fn request_worker(metrics: DashMapMetrics) {
     thread::spawn(move || loop {
         // do long term stuff
         let mut rng = rand::thread_rng();

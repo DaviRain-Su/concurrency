@@ -6,11 +6,11 @@ use std::fmt::Display;
 use std::sync::Arc;
 
 #[derive(Debug, Clone, Default)]
-pub struct Metrics {
+pub struct DashMapMetrics {
     data: Arc<DashMap<String, i64>>,
 }
 
-impl Metrics {
+impl DashMapMetrics {
     pub fn inc(&self, key: impl Into<String>) -> anyhow::Result<()> {
         let mut counter = self.data.entry(key.into()).or_insert(0);
         *counter += 1;
@@ -24,7 +24,7 @@ impl Metrics {
     }
 }
 
-impl Display for Metrics {
+impl Display for DashMapMetrics {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for entry in self.data.iter() {
             writeln!(f, "{}: {}", entry.key(), entry.value())?;
